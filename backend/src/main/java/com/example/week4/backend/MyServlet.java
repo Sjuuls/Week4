@@ -20,7 +20,7 @@ public class MyServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-            return;
+        resp.getWriter().println("test");
     }
 
     @Override

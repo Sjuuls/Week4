@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.app.NotificationManager;
@@ -33,17 +34,30 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends Activity implements Runnable {
     TextView tv;
+    EditText etname, etage;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = (TextView) findViewById(R.id.textViewOldestAge);
-        Button b = (Button)findViewById(R.id.bevestig);
+        etage = (EditText) findViewById(R.id.editTextAge);
+        etname = (EditText) findViewById(R.id.editTextName);
+        Button b = (Button) findViewById(R.id.bevestig);
         b.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
                 tv.setText("wachten...");
@@ -51,10 +65,13 @@ public class MainActivity extends Activity implements Runnable {
 
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private Handler myHandler = new Handler() {
-        public void handleMessage(Message msg){
+        public void handleMessage(Message msg) {
             String s = msg.getData().getString("bericht");
             tv.setText(s);
         }
@@ -63,18 +80,70 @@ public class MainActivity extends Activity implements Runnable {
     public void run() {
         try {
 
-            URL url = new URL(getResources().getString(R.string.url));
-            HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
-            InputStream in = httpcon.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String s = reader.readLine();
+            String par = "Naam=" + etname + "&Leeftijd=" + etage;
+            String s = "http://10.0.2.2:8080/oldestperson";
+            URL url = new URL(s);
+            HttpURLConnection con =  (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            //of con.setDoOutput(true);
+            int contentLength = par.length();
+
+            con. setFixedLengthStreamingMode(contentLength);
+            OutputStream out = con.getOutputStream();
+            out.write(par.getBytes());
+            InputStream in = con.getInputStream();
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(in));
+            String result = reader.readLine();
             Message msg = new Message();
-            msg.getData().putString("bericht", s);
+            msg.getData().putString("bericht", result);
             myHandler.sendMessage(msg);
-        }
-        catch(IOException ioe){
+
+            con.disconnect();
+        } catch (IOException ioe) {
             Log.e("MainActivity", ioe.toString());
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.example.week4.week4/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.example.week4.week4/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

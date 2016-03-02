@@ -40,7 +40,7 @@
                 android:inputType="textPersonName"
                 android:text="Name"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/editTextName"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="date"
                 android:ems="10"
-                android:id="@+id/editText2"
+                android:id="@+id/editTextAge"
                 android:layout_gravity="center_horizontal" />
 
             <Space
