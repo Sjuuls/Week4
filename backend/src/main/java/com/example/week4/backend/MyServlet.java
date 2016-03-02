@@ -7,67 +7,24 @@
 package com.example.week4.backend;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
 public class MyServlet extends HttpServlet {
-
-    private ArrayList<Persoon> personen;
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-
-            return;
+        resp.setContentType("text/plain");
+        resp.getWriter().println("Please use the form to POST to this url");
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        String sNaam = req.getParameter("naam");
-        Integer iLeeftijd =  Integer.parseInt(req.getParameter("leeftijd"));
-
+        String name = req.getParameter("name");
         resp.setContentType("text/plain");
-        if(sNaam == null) {
-            resp.getWriter().println("Vul een naam in");
-        }if(iLeeftijd == 0 || iLeeftijd == null){
-            resp.getWriter().println("Vul de leeftijd in");
+        if(name == null) {
+            resp.getWriter().println("Please enter a name");
         }
-
-        Persoon oudstePersoon = getOudsePersoon();
-
-        resp.getWriter().println("De oudste persoon is " + oudstePersoon.Leeftijd + "jaar en zijn/haar naam is: " + oudstePersoon.Naam);
-    }
-    private void addPersoon(String sNaam, Integer iLeeftijd){
-        Persoon p = new Persoon();
-        p.Leeftijd = iLeeftijd;
-        p.Naam = sNaam;
-
-        personen.add(p);
-    }
-    private Persoon getOudsePersoon(){
-        Persoon resultPersoon = null;
-        Persoon MyPersoon = null;
-
-        for (int i = 0; i < personen.size(); i++){
-            MyPersoon = personen.get(i);
-
-            if(resultPersoon == null){
-                resultPersoon = MyPersoon;
-            }
-
-            if(MyPersoon.Leeftijd > resultPersoon.Leeftijd){
-                resultPersoon = MyPersoon;
-            }
-        }
-
-        return resultPersoon;
-    }
-
-    class Persoon{
-        public String Naam;
-        public Integer Leeftijd;
+        resp.getWriter().println("Hello " + name);
     }
 }
