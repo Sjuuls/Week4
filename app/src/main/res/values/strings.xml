@@ -7,6 +7,6 @@
     <string name="errortitle">service is niet gestart</string>
     <string name="errormessage1">Zet bluetooth aan</string>
     <string name="errormessage2">Dit apparaat ondersteund geen bluetooth</string>
-    <string name="url">http://145.89.141.120:8080/oldestperson/myservlet</string>
+    <string name="url">http://145.89.119.34:8080/oldestperson</string>
 
 </resources>

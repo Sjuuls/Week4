@@ -15,30 +15,50 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MyServlet extends HttpServlet {
 
-    private ArrayList<Persoon> personen;
+    private ArrayList<Persoon> personen = new ArrayList<Persoon>();
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        resp.getWriter().println("test");
+        String sNaam = req.getParameter("naam");
+        if (sNaam.toLowerCase().equals("clear")){
+            personen.clear();
+            return;
+        }
+
+        Integer iLeeftijd = Integer.parseInt(req.getParameter("leeftijd"));
+
+        if(sNaam == null) {
+            resp.getWriter().println("Vul een naam in");
+            return;
+        }if(iLeeftijd == 0 || iLeeftijd == null){
+            resp.getWriter().println("Vul de leeftijd in");
+            return;
+        }
+
+        addPersoon(sNaam, iLeeftijd);
+
+        Persoon oudstePersoon = getOudsePersoon();
+
+        resp.getWriter().println("De oudste persoon is " + oudstePersoon.Leeftijd + " jaar en zijn/haar naam is: " + oudstePersoon.Naam);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        String sNaam = req.getParameter("naam");
-        Integer iLeeftijd =  Integer.parseInt(req.getParameter("leeftijd"));
-
-        resp.setContentType("text/plain");
-        if(sNaam == null) {
-            resp.getWriter().println("Vul een naam in");
-        }if(iLeeftijd == 0 || iLeeftijd == null){
-            resp.getWriter().println("Vul de leeftijd in");
-        }
-
-        Persoon oudstePersoon = getOudsePersoon();
-
-        resp.getWriter().println("De oudste persoon is " + oudstePersoon.Leeftijd + "jaar en zijn/haar naam is: " + oudstePersoon.Naam);
+//        String sNaam = req.getParameter("naam");
+//        Integer iLeeftijd =  Integer.parseInt(req.getParameter("leeftijd"));
+//
+//        resp.setContentType("text/plain");
+//        if(sNaam == null) {
+//            resp.getWriter().println("Vul een naam in");
+//        }if(iLeeftijd == 0 || iLeeftijd == null){
+//            resp.getWriter().println("Vul de leeftijd in");
+//        }
+//
+//        Persoon oudstePersoon = getOudsePersoon();
+//
+//        resp.getWriter().println("De oudste persoon is " + oudstePersoon.Leeftijd + " jaar en zijn/haar naam is: " + oudstePersoon.Naam);
     }
     private void addPersoon(String sNaam, Integer iLeeftijd){
         Persoon p = new Persoon();
@@ -50,6 +70,13 @@ public class MyServlet extends HttpServlet {
     private Persoon getOudsePersoon(){
         Persoon resultPersoon = null;
         Persoon MyPersoon = null;
+
+        if (personen.size() == 0){
+            Persoon TestPersoon = new Persoon();
+            TestPersoon.Naam = "Test";
+            TestPersoon.Leeftijd = 20;
+                        personen.add(TestPersoon);
+        }
 
         for (int i = 0; i < personen.size(); i++){
             MyPersoon = personen.get(i);

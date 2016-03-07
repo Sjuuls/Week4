@@ -80,17 +80,17 @@ public class MainActivity extends Activity implements Runnable {
     public void run() {
         try {
 
-            String par = "Naam=" + etname + "&Leeftijd=" + etage;
-            String s = "http://10.0.2.2:8080/oldestperson";
+            String par = "?naam=" + etname.getText() + "&leeftijd=" + etage.getText();
+            String s = "http://145.89.119.34:8080/oldestperson" + par;
             URL url = new URL(s);
             HttpURLConnection con =  (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
+            con.setRequestMethod("GET");
             //of con.setDoOutput(true);
-            int contentLength = par.length();
-
-            con. setFixedLengthStreamingMode(contentLength);
-            OutputStream out = con.getOutputStream();
-            out.write(par.getBytes());
+//            int contentLength = par.length();
+//
+//            con. setFixedLengthStreamingMode(contentLength);
+//            OutputStream out = con.getOutputStream();
+//            out.write(par.getBytes());
             InputStream in = con.getInputStream();
 
             BufferedReader reader =
